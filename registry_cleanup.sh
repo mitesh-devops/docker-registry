@@ -6,13 +6,13 @@
 # Configs
 
 : ${REGISTRY_URL:=http://127.0.0.1:5000}
-: ${REGISTRY_DIR:=./data}
-: ${MAX_AGE_SECONDS:=$((30 * 24 * 3600))} # 30 days
-: ${DOCKER_REGISTRY_NAME:=registry_web}
+: ${REGISTRY_DIR:=/var/lib/docker/volumes/5f3cca8361b5f8f0ac5b793f762384ddf0f30a2cc6a0dca543010303ed2e561e/_data}
+: ${MAX_AGE_SECONDS:=$((4 * 24 * 3600))} # 30 days
+: ${DOCKER_REGISTRY_NAME:=registry}
 : ${DOCKER_REGISTRY_CONFIG:=/etc/docker/registry/config.yml}
 : ${DRY_RUN:=false}
 
-EXCLUDE_TAGS="^(\*|master|develop|latest|stable|(v|[0-9]\.)[0-9]+(\.[0-9]+)*)$"
+EXCLUDE_TAGS="^(\*|master|develop|stable|*)$"
 REPO_DIR=${REGISTRY_DIR}/docker/registry/v2/repositories
 
 # In doubt fall back to dry mode
@@ -52,6 +52,8 @@ remove_old_tags() {
   done
 }
 
+
+
 remove_image_tags() {
   local repo=$1
   local image=$2
@@ -59,7 +61,7 @@ remove_image_tags() {
   echo "- Cleanup image $repo/$image"
 
   local tag_path
-  for tag_path in $REPO_DIR/$repo/$image/_manifests/tags/*; do
+  for tag_path in $REPO_DIR/$repo/_manifests/tags/*; do
     local tag=$(basename $tag_path)
 
     # Do not clenup execluded tags
@@ -84,6 +86,7 @@ remove_image_tags() {
     fi
   done
 }
+
 
 delete_manifests_without_tags(){
   cd ${REPO_DIR}
