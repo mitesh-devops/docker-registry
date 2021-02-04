@@ -7,12 +7,12 @@
 
 : ${REGISTRY_URL:=http://127.0.0.1:5000}
 : ${REGISTRY_DIR:=/mnt/registry}
-: ${MAX_AGE_SECONDS:=$((1 * 24 * 3600))} # 30 days
+: ${MAX_AGE_SECONDS:=$((2 * 24 * 3600))} # 30 days
 : ${DOCKER_REGISTRY_NAME:=registry}
 : ${DOCKER_REGISTRY_CONFIG:=/etc/docker/registry/config.yml}
 : ${DRY_RUN:=false}
 
-EXCLUDE_TAGS="^(\*|latest|stable|*)$"
+EXCLUDE_TAGS="^(\*|master|develop|latest|stable|*)$"
 REPO_DIR=${REGISTRY_DIR}/docker/registry/v2/repositories
 
 # In doubt fall back to dry mode
@@ -52,7 +52,6 @@ remove_old_tags() {
     echo
   done
 }
-
 
 remove_image_tags() {
   local repo=$1
